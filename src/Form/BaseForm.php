@@ -16,9 +16,60 @@ abstract class BaseForm
     private $nonceValue;
     private $submittedData;
     protected $formFields = [];
+    protected $templateVars = [];
+
+    /**
+     * This is where a child have to define it's fields
+     * @return mixed
+     */
+    abstract function generateFields();
+
 
     public function __construct(){
-        $this->templateVars = [];
+
+        $this->addCSRFTokenField();
+
+        // Set up form class (after submitting we need to know what class to initialize
+        $classSelf = new \ReflectionClass($this);
+        $name = $classSelf->getName();
+
+
+        // Set template variable also
+        $this->templateVars['form_fields']['nonce'] = $nonce;
+
+        // Setup submission
+        $this->setSubmittedDatasFromPost();
+
+        // Add child fields
+        $this->generateFields();
+
+        // Add fields to template variables
+        $this->addFieldsToTemplateVars();
+    }
+
+    /**
+     * Get submitted values (independently of submission method eg. ajax / simple)
+     */
+    private function setSubmittedDatasFromPost(){
+        if(null !== $_POST){
+            // If ajax, check formData parameter
+            if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                $keyValuePairs = explode('&', $_POST['formData']);
+                array_walk($keyValuePairs, function($value){
+                    list($key, $postValue) = explode('=', $value);
+                    $this->submittedData[$key] = urldecode($postValue);
+                });
+            }
+            else{
+                $this->submittedData = $_POST;
+            }
+        }
+    }
+
+    /**
+     * Add CSRF token hidden input field
+     */
+    private function addCSRFTokenField(){
         $this->nonceValue = $this->createNonce();
         $nonce = new FormField(FormField::TYPE_HIDDEN);
         $nonce
@@ -31,7 +82,7 @@ abstract class BaseForm
                     }
                 }
 
-                // Use our csrf token
+                // Use own csrf token
                 else{
                     if (!isset($_SESSION['csrf_tokens'][$value])) {
                         throw new \Exception('Unauthorized request');
@@ -46,42 +97,8 @@ abstract class BaseForm
             ->setMandatory(true);
         $key = 'nonce';
         $this->setFields($key, $nonce);
-
-        // Set up form class (after submitting we need to know what class to initialize
-        $classSelf = new \ReflectionClass($this);
-        $name = $classSelf->getName();
-
-
-        // Set template variable also
-        $this->templateVars['form_fields']['nonce'] = $nonce;
-
-        // Setup submission
-        if(null !== $_POST){
-            // If ajax, check formData parameter
-            if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-                $keyValuePairs = explode('&', $_POST['formData']);
-                array_walk($keyValuePairs, function($value){
-                   list($key, $postValue) = explode('=', $value);
-                   $this->submittedData[$key] = urldecode($postValue);
-                });
-            }
-            else{
-                $this->submittedData = $_POST;
-            }
-        }
-
-        // Add child fields
-        $this->generateFields();
-
-        // Add fields to template variables
-        $this->addFieldsToTemplateVars();
     }
 
-    /**
-     * This is where a child have to define it's fields
-     * @return mixed
-     */
-    abstract function generateFields();
 
     /**
      * Create nonce
