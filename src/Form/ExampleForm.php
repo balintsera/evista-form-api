@@ -81,9 +81,6 @@ class ExampleForm extends BaseForm
         $submit->setValue('Elküldöm');
         $this->formFields['submit'] = $submit;
 
-        // Add them to template variables
-        $this->templateVars['form_fields'] = array_merge($this->formFields, $this->templateVars['form_fields']) ;
-
     }
 
 }

@@ -73,6 +73,8 @@ abstract class BaseForm
         // Add child fields
         $this->generateFields();
 
+        // Add fields to template variables
+        $this->addFieldsToTemplateVars();
     }
 
     /**
@@ -201,6 +203,10 @@ abstract class BaseForm
         $this->formFields[$key] = $field;
 
         return $this;
+    }
+
+    private function addFieldsToTemplateVars(){
+        $this->templateVars['form_fields'] = array_merge($this->formFields, $this->templateVars['form_fields']) ;
     }
 
 }
