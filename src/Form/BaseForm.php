@@ -26,13 +26,20 @@ abstract class BaseForm
 
 
     public function __construct(){
-
+        // Important: add csrf token to every form
         $this->addCSRFTokenField();
 
         // Set up form class (after submitting we need to know what class to initialize
         $classSelf = new \ReflectionClass($this);
-        $name = $classSelf->getName();
+        $className = $classSelf->getShortName();
+        $fieldName = 'class';
+        $classNameField = new FormField(FormField::TYPE_HIDDEN);
+        $classNameField
+            ->setName($fieldName)
+            ->setValue($className)
+            ->setMandatory(true);
 
+        $this->addField($fieldName, $classNameField);
 
         // Set template variable also
         $this->templateVars['form_fields']['nonce'] = $nonce;
@@ -96,7 +103,7 @@ abstract class BaseForm
             })
             ->setMandatory(true);
         $key = 'nonce';
-        $this->setFields($key, $nonce);
+        $this->addField($key, $nonce);
     }
 
 
@@ -186,15 +193,19 @@ abstract class BaseForm
         return $this->submittedData;
     }
 
-    public function getTemplate()
-    {
-        return self::TEMPLATE_NAME;
-    }
-
+    /**
+     * Get templateVars
+     * @return array
+     */
     public function getTemplateVars(){
         return $this->templateVars;
     }
 
+    /**
+     * Set templateVars
+     * @param array $templateVars
+     * @return $this
+     */
     public function setTemplateVars(Array $templateVars)
     {
         $this->templateVars = $templateVars;
@@ -202,6 +213,12 @@ abstract class BaseForm
         return $this;
     }
 
+    /**
+     * Add element to template vars
+     * @param $element
+     * @param null $key
+     * @return $this
+     */
     public function addToTemplateVars($element, $key = null)
     {
         $this->templateVars[$key] = $element;
@@ -209,19 +226,40 @@ abstract class BaseForm
         return $this;
     }
 
-
+    /**
+     * Get fields
+     * @return array
+     */
     public function getFields()
     {
         return $this->formFields;
     }
 
-    public function setFields($key, $field)
+    /**
+     * Add a new field to the form
+     * @param $key
+     * @param $field
+     * @return $this
+     */
+    public function addField($key, $field)
     {
         $this->formFields[$key] = $field;
 
         return $this;
     }
 
+    /**
+     * Get a field
+     * @param $key
+     * @return mixed
+     */
+    public function getField($key){
+        return $this->formFields[$key];
+    }
+
+    /**
+     * Adds fields to template vars
+     */
     private function addFieldsToTemplateVars(){
         $this->templateVars['form_fields'] = array_merge($this->formFields, $this->templateVars['form_fields']) ;
     }

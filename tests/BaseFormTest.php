@@ -15,11 +15,23 @@ class BaseFormTest extends \PHPUnit_Framework_TestCase
 {
     public function testTest(){
         $form = new ExampleForm();
-        $fields = $form->getFields();
         // Assertion for submit field
-        $this->assertInstanceOf('Evista\FormAPI\ValueObject\FormField', $fields['submit']);
-        $this->assertEquals('Elküldöm', $fields['submit']->getValue());
-        $this->assertEquals('submit', $fields['submit']->getType());
+        $this->assertInstanceOf('Evista\FormAPI\ValueObject\FormField', $form->getField('submit'));
+        $this->assertEquals('Elküldöm', $form->getField('submit')->getValue());
+        $this->assertEquals('submit', $form->getField('submit')->getType());
+    }
+
+    public function testCSRF(){
+        $form = new ExampleForm();
+
+        $this->assertNotEmpty($form->getField('nonce')->getValue());
+
+    }
+
+    public function testClassName(){
+        $form = new ExampleForm();
+
+        $this->assertEquals('ExampleForm', $form->getField('class')->getValue());
     }
 
 }
