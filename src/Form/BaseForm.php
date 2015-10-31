@@ -25,9 +25,22 @@ abstract class BaseForm
             ->setName('nonce')
             ->setValue($this->createNonce())
             ->setValidationCallback(function($value){
-                if(!wp_verify_nonce($value, $this->nonceKey)){
-                    throw new \Exception('Unauthorized request');
+                if(function_exists('wp_verify_nonce')){
+                    if(!wp_verify_nonce($value, $this->nonceKey)){
+                        throw new \Exception('Unauthorized request');
+                    }
                 }
+
+                // Use our csrf token
+                else{
+                    if (!isset($_SESSION['csrf_tokens'][$value])) {
+                        throw new \Exception('Unauthorized request');
+                    }
+                    else{
+                        unset($_SESSION['csrf_tokens'][$value]);
+                    }
+                }
+
                 return false;
             })
             ->setMandatory(true);
@@ -73,10 +86,15 @@ abstract class BaseForm
      * @return string
      */
     private function createNonce(){
-        if(function_exists(wp_create_nonce))
+        if(function_exists('wp_create_nonce'))
             return wp_create_nonce($this->nonceKey);
 
-        return md5($this->nonceKey);
+        $nonce = md5(microtime(true).$this->nonceKey);
+        if (empty($_SESSION['csrf_tokens'])) {
+            $_SESSION['csrf_tokens'] = array();
+        }
+        $_SESSION['csrf_tokens'][$nonce] = true;
+        return $nonce;
     }
 
     /**
