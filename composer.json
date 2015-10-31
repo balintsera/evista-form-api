@@ -1,0 +1,42 @@
+{
+    "name": "evista/form_api",
+    "description": "Object Oriented Form API WordPress plugin",
+    "keywords": [
+        "evista",
+        "nutshell"
+    ],
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Balint Sera",
+            "email": "sera.balint@e-vista.hu",
+            "homepage": "http://evista-agency.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : ">=5.5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : "4.*",
+        "scrutinizer/ocular": "~1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Evista\\FormAPI\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Evista\\FormAPI\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}

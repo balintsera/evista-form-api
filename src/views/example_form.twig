@@ -1,0 +1,37 @@
+{% block preform %}{% endblock %}
+<form method="post" data-formid="crm-short-form">
+    {% for field in form_fields %}
+            {# Output form errors #}
+            {% if form_errors is defined %}
+                {% for name, error in form_errors %}
+                    {% if name == field.name %}
+                        <label class="form-error" for="{{ name }}">{{ error.error }}</label>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <{{ field.tagName }} type="{{ field.type }}" name="{{ field.name }}" class="wide_form"
+            {% if field.attributes|length > 0 %}
+                {% for attr_name, attr_value in field.attributes %}
+                    {{ attr_name }}="{{ attr_value }}"
+                {% endfor %}
+            {% endif %}
+
+            {% if field.value is defined and field.type != 'textarea'%}
+                value="{{ field.value }}"
+            {% endif %}
+
+
+            {% if field.type == 'checkbox' and field.defaultValue %}
+                checked="checked"
+            {% endif %}
+            >{% if field.type == 'checkbox' and field.label is defined %}
+            <label for="{{ field.name }}">
+                {{ field.label }}
+            </label>
+            {% endif %}{% if field.type == 'textarea' %}{{ field.value }}</textarea>{% endif%}
+    {% endfor %}
+
+</form>
+
+{% block postform %}{% endblock %}
