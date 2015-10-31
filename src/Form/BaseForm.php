@@ -15,6 +15,7 @@ abstract class BaseForm
     private $nonceKey = 'djlKJdlkjei877798a7lskdjf';
     private $nonceValue;
     private $submittedData;
+    protected $formFields = [];
 
     public function __construct(){
         $this->templateVars = [];
@@ -56,35 +57,32 @@ abstract class BaseForm
             }
         }
 
-
+        // Add child fields
+        $this->generateFields();
 
     }
+
+    /**
+     * This is where a child have to define it's fields
+     * @return mixed
+     */
+    abstract function generateFields();
 
     /**
      * Create nonce
      * @return string
      */
     private function createNonce(){
-        return wp_create_nonce($this->nonceKey);
+        if(function_exists(wp_create_nonce))
+            return wp_create_nonce($this->nonceKey);
+
+        return md5($this->nonceKey);
     }
-
-    public abstract function getTemplate();
-
-    public abstract function setTemplate($templateName);
-
-    public abstract function getTemplateVars();
-
-    public abstract function setTemplateVars(Array $templateVars);
-
-    public abstract function addToTemplateVars($element, $key = null);
-
-    public abstract function getFields();
-
-    public abstract function setFields($key, $field);
 
     /**
      * populates form from POST after submission
      */
+
     public function populateFields(){
         if(count($this->submittedData)<1) return;
         array_map(function(FormField &$field){
@@ -149,6 +147,42 @@ abstract class BaseForm
     public function getSubmittedData()
     {
         return $this->submittedData;
+    }
+
+    public function getTemplate()
+    {
+        return self::TEMPLATE_NAME;
+    }
+
+    public function getTemplateVars(){
+        return $this->templateVars;
+    }
+
+    public function setTemplateVars(Array $templateVars)
+    {
+        $this->templateVars = $templateVars;
+
+        return $this;
+    }
+
+    public function addToTemplateVars($element, $key = null)
+    {
+        $this->templateVars[$key] = $element;
+
+        return $this;
+    }
+
+
+    public function getFields()
+    {
+        return $this->formFields;
+    }
+
+    public function setFields($key, $field)
+    {
+        $this->formFields[$key] = $field;
+
+        return $this;
     }
 
 }
