@@ -56,11 +56,13 @@ abstract class BaseForm
         // Populate if we are after submission
         $this->populateFields();
 
-        //Submit handling
-        $this->handleSubmission();
     }
 
-    protected function handleSubmission(){
+    /**
+     * Handles submission - it's better not to call automatically
+     * @throws \NoCallbackSetException
+     */
+    public function handleSubmission(){
         // When posted
         if (null !== $this->getSubmittedData()['nonce']) {
             $this->runOnSubmit();
@@ -72,7 +74,11 @@ abstract class BaseForm
     }
 
     private function runOnSubmit(){
-        $this->onSubmitCallable();
+        if(null === $this->onSubmitCallable){
+            throw new \NoCallbackSetException('onSubmit callable is not set');
+        }
+        $callable = $this->onSubmitCallable;
+        $callable();
     }
 
     /**
