@@ -17,6 +17,7 @@ abstract class BaseForm
     private $submittedData;
     protected $formFields = [];
     protected $templateVars = [];
+    protected $template;
 
     /**
      * This is where a child have to define it's fields
@@ -267,4 +268,24 @@ abstract class BaseForm
         $this->templateVars['form_fields'] = array_merge($this->formFields, $this->templateVars['form_fields']) ;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * @param mixed $template
+     * @return BaseForm
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+
+        return $this;
+    }
+
+    
 }
