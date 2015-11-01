@@ -16,8 +16,8 @@ abstract class BaseForm
     private $nonceValue;
     private $submittedData;
     protected $formFields = [];
-    protected $templateVars = [];
-    protected $template;
+    protected $templateVars = ['form_fields' =>[]];
+    protected $templateName;
 
     /**
      * This is where a child have to define it's fields
@@ -42,8 +42,6 @@ abstract class BaseForm
 
         $this->addField($fieldName, $classNameField);
 
-        // Set template variable also
-        $this->templateVars['form_fields']['nonce'] = $nonce;
 
         // Setup submission
         $this->setSubmittedDatasFromPost();
@@ -88,6 +86,7 @@ abstract class BaseForm
             ->setValue($this->createNonce())
             ->setValidationCallback(function($value){
                 if(function_exists('wp_verify_nonce')){
+
                     if(!wp_verify_nonce($value, $this->nonceKey)){
                         throw new \Exception('Unauthorized request');
                     }
@@ -107,6 +106,7 @@ abstract class BaseForm
             })
             ->setMandatory(true);
         $key = 'nonce';
+
         $this->addField($key, $nonce);
     }
 
@@ -273,7 +273,7 @@ abstract class BaseForm
      */
     public function getTemplate()
     {
-        return $this->template;
+        return $this->templateName;
     }
 
     /**
@@ -282,10 +282,10 @@ abstract class BaseForm
      */
     public function setTemplate($template)
     {
-        $this->template = $template;
+        $this->templateName = $template;
 
         return $this;
     }
 
-    
+
 }
