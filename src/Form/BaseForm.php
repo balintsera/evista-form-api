@@ -18,7 +18,7 @@ abstract class BaseForm
     protected $formFields = [];
     protected $templateVars = ['form_fields' =>[]];
     protected $templateName;
-    protected $onSuccessCallable;
+    protected $onSubmitCallable;
 
     /**
      * This is where a child have to define it's fields
@@ -63,16 +63,16 @@ abstract class BaseForm
     protected function handleSubmission(){
         // When posted
         if (null !== $this->getSubmittedData()['nonce']) {
-            $this->runOnSuccess();
+            $this->runOnSubmit();
         }
     }
 
-    public function onSuccess(Callable $callable){
-        $this->onSuccessCallable = $callable;
+    public function onSubmit(Callable $callable){
+        $this->onSubmitCallable = $callable;
     }
 
-    private function runOnSuccess(){
-        $this->onSuccessCallable();
+    private function runOnSubmit(){
+        $this->onSubmitCallable();
     }
 
     /**
