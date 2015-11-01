@@ -52,6 +52,9 @@ abstract class BaseForm
 
         // Add fields to template variables
         $this->addFieldsToTemplateVars();
+
+        // Populate if we are after submission
+        $this->populateFields();
     }
 
     /**
