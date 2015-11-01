@@ -58,6 +58,7 @@ abstract class BaseForm
 
     }
 
+
     /**
      * Handles submission - it's better not to call automatically
      * @throws \NoCallbackSetException
@@ -80,6 +81,8 @@ abstract class BaseForm
         $callable = $this->onSubmitCallable;
         $callable();
     }
+
+
 
     /**
      * Get submitted values (independently of submission method eg. ajax / simple)

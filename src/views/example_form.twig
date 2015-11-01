@@ -1,7 +1,21 @@
 {% block preform %}{% endblock %}
 <form method="post" data-formid="crm-short-form">
     {% for field in form_fields %}
-            {# Output form errors #}
+        {% if field.type == 'hidden' %}
+            <input type="hidden" name="{{ field.name }}" value="{{ field.value }}">
+        {% endif %}
+    {% endfor %}
+
+
+    <div class="row inputs">
+        {% set field = form_fields['name']  %}
+        <div class="{{ field.name }} small-12 medium-12 large-3 columns">
+            <input type="text"  value="{{ field.value }}" name="{{ field.name }}"
+            {% if field.attributes|length > 0 %}
+            {% for attr_name, attr_value in field.attributes %}
+                {{ attr_name }}="{{ attr_value }}"
+            {% endfor %}
+            {% endif %}>
             {% if form_errors is defined %}
                 {% for name, error in form_errors %}
                     {% if name == field.name %}
@@ -9,28 +23,82 @@
                     {% endif %}
                 {% endfor %}
             {% endif %}
+        </div>
 
-            <{{ field.tagName }} type="{{ field.type }}" name="{{ field.name }}" class="wide_form"
+        {# shortest form has no phone field #}
+        {% if  form_fields['phone'] is defined %}
+            {% set field = form_fields['phone']  %}
+            <div class="{{ field.name }} small-12 medium-12 large-3 columns">
+                <input type="text" value="{{ field.value }}" name="{{ field.name }}"
+                {% if field.attributes|length > 0 %}
+                {% for attr_name, attr_value in field.attributes %}
+                    {{ attr_name }}="{{ attr_value }}"
+                {% endfor %}
+                {% endif %}>
+                {% if form_errors is defined %}
+                    {% for name, error in form_errors %}
+                        {% if name == field.name %}
+                            <label class="form-error" for="{{ name }}">{{ error.error }}</label>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endif %}
+
+
+        {% set field = form_fields['email']  %}
+        <div class="{{ field.name }} small-12 medium-12 large-3 columns">
+            <input type="text" value="{{ field.value }}" name="{{ field.name }}"
+            {% if field.attributes|length > 0 %}
+            {% for attr_name, attr_value in field.attributes %}
+                {{ attr_name }}="{{ attr_value }}"
+            {% endfor %}
+            {% endif %}>
+            {% if form_errors is defined %}
+                {% for name, error in form_errors %}
+                    {% if name == field.name %}
+                        <label class="form-error" for="{{ name }}">{{ error.error }}</label>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {% set field = form_fields['submit']  %}
+        <div class="{{ field.name }} small-12 medium-12 large-2 columns">
+            <input type="submit" class="{{ field.name }}" value="{{ field.value }}" name="{{ field.name }}"
+            {% if field.attributes|length > 0 %}
+            {% for attr_name, attr_value in field.attributes %}
+                {{ attr_name }}="{{ attr_value }}"
+            {% endfor %}
+            {% endif %}>
+            {% if form_errors is defined %}
+                {% for name, error in form_errors %}
+                    {% if name == field.name %}
+                        <label class="form-error" for="{{ name }}">{{ error.error }}</label>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row checkbox">
+        {% set field = form_fields['subscribe']  %}
+        <div class="{{ field.name }} small-12 medium-12 large-3 columns">
+            <input type="checkbox" class="{{ field.name }}" value="{{ field.value }}" name="{{ field.name }}"
+                   id="newsletter-checkbox"
             {% if field.attributes|length > 0 %}
                 {% for attr_name, attr_value in field.attributes %}
                     {{ attr_name }}="{{ attr_value }}"
                 {% endfor %}
             {% endif %}
 
-            {% if field.value is defined and field.type != 'textarea'%}
-                value="{{ field.value }}"
-            {% endif %}
-
-
-            {% if field.type == 'checkbox' and field.defaultValue %}
+            {% if field.defaultValue %}
                 checked="checked"
             {% endif %}
-            >{% if field.type == 'checkbox' and field.label is defined %}
-            <label for="{{ field.name }}">
-                {{ field.label }}
-            </label>
-            {% endif %}{% if field.type == 'textarea' %}{{ field.value }}</textarea>{% endif%}
-    {% endfor %}
+            >
+            <label for="newsletter-checkbox"> {{ field.label }}</label>
+        </div>
+    </div>
 
 </form>
 
