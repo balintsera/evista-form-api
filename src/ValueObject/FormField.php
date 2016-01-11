@@ -22,6 +22,7 @@ class FormField
     private $type;
     private $attributes = [];
     private $options = [];
+    private $defoption;
     private $name;
     private $value;
     private $default;
@@ -82,6 +83,44 @@ class FormField
     public function setAttributes($attributes)
     {
         $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param array $options
+     * @return FormField
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDefaultOption()
+    {
+        return $this->defoption;
+    }
+
+    /**
+     * @param array $defoption
+     * @return FormField
+     */
+    public function setDefaultOption($defoption)
+    {
+        $this->defoption = $defoption;
 
         return $this;
     }
