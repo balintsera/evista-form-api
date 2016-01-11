@@ -16,6 +16,7 @@ class FormField
     const TYPE_HIDDEN = 'hidden';
     const TYPE_CHECKBOX = 'checkbox';
     const TYPE_TEXTAREA = 'textarea';
+    const TYPE_SELECT = 'select';
 
     private $type;
     private $attributes = [];
@@ -38,6 +39,9 @@ class FormField
         switch($this->type){
             case self::TYPE_TEXTAREA:
                 $this->tagName = 'textarea';
+                break;
+            case self::TYPE_SELECT:
+                $this->tagName = 'select';
                 break;
         }
     }
