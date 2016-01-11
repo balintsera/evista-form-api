@@ -16,6 +16,9 @@ class FormField
     const TYPE_HIDDEN = 'hidden';
     const TYPE_CHECKBOX = 'checkbox';
     const TYPE_TEXTAREA = 'textarea';
+    const TYPE_SELECT = 'select';
+    const TYPE_BUTTON = 'button';
+
 
     private $type;
     private $attributes = [];
@@ -27,6 +30,7 @@ class FormField
     private $sanitizationCallback;
     private $validationCallback;
     private $label; // only checkboxes self::TYPE_CHECKBOX
+    private $options = []; // only select self::TYPE_SELECT
 
     public function __construct($type){
         $this->type = $type;
@@ -38,6 +42,12 @@ class FormField
         switch($this->type){
             case self::TYPE_TEXTAREA:
                 $this->tagName = 'textarea';
+                break;
+            case self::TYPE_SELECT:
+                $this->tagName = 'select';
+                break;
+            case self::TYPE_BUTTON:
+                $this->tagName = 'button';
                 break;
         }
     }
@@ -76,6 +86,25 @@ class FormField
     public function setAttributes($attributes)
     {
         $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param array $options
+     * @return FormField
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
 
         return $this;
     }
