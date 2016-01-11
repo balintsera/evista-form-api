@@ -17,6 +17,7 @@ class FormField
     const TYPE_CHECKBOX = 'checkbox';
     const TYPE_TEXTAREA = 'textarea';
     const TYPE_SELECT = 'select';
+    
 
     private $type;
     private $attributes = [];
