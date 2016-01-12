@@ -18,6 +18,7 @@ class FormField
     const TYPE_TEXTAREA = 'textarea';
     const TYPE_SELECT = 'select';
     const TYPE_BUTTON = 'button';
+    const TYPE_FILE = 'file';
 
 
     private $type;
