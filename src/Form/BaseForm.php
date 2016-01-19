@@ -14,6 +14,7 @@ abstract class BaseForm
 {
     private $nonceKey = 'djlKJdlkjei877798a7lskdjf';
     private $nonceValue;
+    private $formName;
     private $submittedData;
     protected $formFields = [];
     protected $templateVars = ['form_fields' =>[]];
@@ -113,21 +114,11 @@ abstract class BaseForm
             ->setName('nonce')
             ->setValue($this->createNonce())
             ->setValidationCallback(function($value){
-                if(function_exists('wp_verify_nonce')){
-
-                    if(!wp_verify_nonce($value, $this->nonceKey)){
-                        throw new \Exception('Unauthorized request');
-                    }
+                if (!isset($_SESSION['csrf_tokens'][$value])) {
+                    throw new \Exception('Unauthorized request');
                 }
-
-                // Use own csrf token
                 else{
-                    if (!isset($_SESSION['csrf_tokens'][$value])) {
-                        throw new \Exception('Unauthorized request');
-                    }
-                    else{
-                        unset($_SESSION['csrf_tokens'][$value]);
-                    }
+                    unset($_SESSION['csrf_tokens'][$value]);
                 }
 
                 return false;
@@ -144,8 +135,6 @@ abstract class BaseForm
      * @return string
      */
     private function createNonce(){
-        if(function_exists('wp_create_nonce'))
-            return wp_create_nonce($this->nonceKey);
 
         $nonce = md5(microtime(true).$this->nonceKey);
         if (empty($_SESSION['csrf_tokens'])) {
