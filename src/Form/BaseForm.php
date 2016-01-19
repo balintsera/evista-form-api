@@ -43,6 +43,7 @@ abstract class BaseForm
 
         $this->addField($fieldName, $classNameField);
 
+        // Create unique form name
         $fieldName = 'form-name';
         $formNameField = new FormField(FormField::TYPE_HIDDEN);
         $formNameField
