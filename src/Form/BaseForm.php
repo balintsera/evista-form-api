@@ -14,7 +14,6 @@ abstract class BaseForm
 {
     private $nonceKey = 'djlKJdlkjei877798a7lskdjf';
     private $nonceValue;
-    private $formName;
     private $submittedData;
     protected $formFields = [];
     protected $templateVars = ['form_fields' =>[]];
@@ -44,6 +43,13 @@ abstract class BaseForm
 
         $this->addField($fieldName, $classNameField);
 
+        $fieldName = 'form-name';
+        $formNameField = new FormField(FormField::TYPE_HIDDEN);
+        $formNameField
+            ->setName($fieldName)
+            ->setValue($className.'-'.$this->nonceValue)
+            ->setMandatory(true);
+        $this->addField($fieldName, $formNameField);
 
         // Setup submission
         $this->setSubmittedDatasFromPost();
