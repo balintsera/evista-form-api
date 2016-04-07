@@ -28,6 +28,7 @@ class FormField
     private $default;
     private $tagName = 'input';
     private $mandatory = FALSE;
+    private $mandatoryMsg = 'This is mandatory.';
     private $sanitizationCallback;
     private $validationCallback;
     private $label; // only checkboxes self::TYPE_CHECKBOX
@@ -179,11 +180,29 @@ class FormField
      * @param boolean $mandatory
      * @return FormField
      */
-    public function setMandatory($mandatory)
+    public function setMandatory($mandatory, $mandatoryMsg = false)
     {
         $this->mandatory = $mandatory;
+        if($mandatoryMsg) $this->mandatoryMsg = $mandatoryMsg;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMandatoryMsg()
+    {
+      return $this->mandatoryMsg;
+    }
+
+    /**
+     * @param string $mandatoryMsg
+     * @return FormField
+     */
+    public function setMandatoryMsg($mandatoryMsg)
+    {
+      $this->mandatoryMsg = $mandatoryMsg;
     }
 
     /**

@@ -184,9 +184,10 @@ abstract class BaseForm
             if(isset($this->submittedData[$field->getName()])){
                 // is it mandatory and empty?
                 if($field->isMandatory() && strlen($this->submittedData[$field->getName()]) < 1){
+                    // Error value 1: This is mandatory. (translateable)
                     $errors[$field->getName()] = [
                         'field' => $field->getName(),
-                        'error' => "This is mandatory.",
+                        'error' => $field->getMandatoryMsg(),
                     ];
 
                     // Go to the next field, no need to validate
