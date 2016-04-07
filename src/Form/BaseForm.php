@@ -179,21 +179,24 @@ abstract class BaseForm
      * @return mixed
      */
     public function validate(){
+        if(count($this->submittedData)<1) return;
         $errors = [];
         array_map(function(FormField $field) use (&$errors){
+            // is it mandatory and empty?
+            if($field->isMandatory() && (strlen($this->submittedData[$field->getName()]) < 1 || $this->submittedData[$field->getName()] == null)){
+                $errors[$field->getName()] = [
+                    'field' => $field->getName(),
+                    'error' => $field->getMandatoryMsg(),
+                ];
+
+                // Go to the next field, no need to validate
+                return true;
+            }
+
             if(isset($this->submittedData[$field->getName()])){
-                // is it mandatory and empty?
-                if($field->isMandatory() && strlen($this->submittedData[$field->getName()]) < 1){
-                    // Error value 1: This is mandatory. (translateable)
-                    $errors[$field->getName()] = [
-                        'field' => $field->getName(),
-                        'error' => $field->getMandatoryMsg(),
-                    ];
 
-                    // Go to the next field, no need to validate
-                    return true;
-                }
-
+                // If mandatory validation true then we don't need further validation on empty data
+                if(array_key_exists($field->getName(), $errors)) return false;
 
                 $validationResult = $field->validate();
                 if($validationResult){
