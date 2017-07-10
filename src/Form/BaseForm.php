@@ -141,7 +141,7 @@ abstract class BaseForm
      * Create nonce
      * @return string
      */
-    private function createNonce(){
+    public function createNonce(){
 
         $nonce = md5(microtime(true).$this->nonceKey);
         if (empty($_SESSION['csrf_tokens'])) {
